@@ -113,13 +113,13 @@ for block in range(0, len(stocks), 150):
 f.close()
 
 #Import s3 credentials from ubuntu directory
-cred_file = open('/home/ubuntu/keys/s3_creds_mmx.json')
+cred_file = open('/home/ubuntu/keys/s3_creds_sjh.json')
 creds = json.load(cred_file)
 AWS_ACCESS_KEY_ID = creds['aws_access_key_id']
 AWS_SECRET_ACCESS_KEY = creds['aws_secret_access_key']
 
 #write files to s3 bucket
 s3 = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
-bucket = s3.create_bucket('metamx-shecht')
+bucket = s3.create_bucket('shecht-metamarkets')
 key = bucket.new_key(s3_filename)
 key.set_contents_from_filename(ubuntu_filename)
