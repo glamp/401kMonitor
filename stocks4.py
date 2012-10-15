@@ -1,13 +1,14 @@
-#http://stackoverflow.com/questions/1301493/python-timezones
 import urllib2, urllib
-import json
-import csv
+import json, csv
 import pprint as pp
 import random
-import time, date
+import time
 from datetime import datetime, timedelta
-import os
-import re
+import os, re, sys
+from boto.s3.connection import S3Connection
+from boto.s3.key import Key
+import boto
+
 
 def convert_dataypes(x):
     try:
@@ -55,9 +56,18 @@ with open(dirname + '/tickers_funds.csv', 'rU') as funds:
 
 random.shuffle(stocks)
 
-time_stamp = str(datetime.now())
+cur_date = datetime.now() #+ timedelta(hours=8)
+time_stamp = str(cur_date)
+year = str(cur_date.year)
+month = str(cur_date.month)
+day = str(cur_date.day)
+hour = str(cur_date.hour)
+date_plug = 'y='+year+'/m='+month+'/d='+day+'/h='+hour+'/'
+ubuntu_filename = '/home/ubuntu/repo/flatfiles/stockdata_'+time_stamp+'.csv'
+s3_filename = 'stockdata/'+date_plug+'stockdata_'+time_stamp+'.csv'
 
-f = open('/Users/admin/Desktop/Demo_Data/TickerTracker/Stock_Data/stockdata_'+time_stamp+'.csv', 'wb')
+f = open(ubuntu_filename, 'wb')
+#f = open('/Users/admin/Desktop/Demo_Data/TickerTracker/Stock_Data/stockdata_'+time_stamp+'.csv', 'wb')
 w = csv.writer(f)
 columns = [u'AfterHoursChangeRealtime', u'AnnualizedGain', u'Ask', u'AskRealtime', u'AverageDailyVolume', u'Bid', u'BidRealtime', u'BookValue', u'Change', u'ChangeFromFiftydayMovingAverage', u'ChangeFromTwoHundreddayMovingAverage', u'ChangeFromYearHigh', u'ChangeFromYearLow', u'ChangePercentRealtime', u'ChangeRealtime', u'Change_PercentChange', u'ChangeinPercent', u'Commission', u'DaysHigh', u'DaysLow', u'DaysRange', u'DaysRangeRealtime', u'DaysValueChange', u'DaysValueChangeRealtime', u'DividendPayDate', u'DividendShare', u'DividendYield', u'EBITDA', u'EPSEstimateCurrentYear', u'EPSEstimateNextQuarter', u'EPSEstimateNextYear', u'EarningsShare', u'ErrorIndicationreturnedforsymbolchangedinvalid', u'ExDividendDate', u'FiftydayMovingAverage', u'HighLimit', u'HoldingsGain', u'HoldingsGainPercent', u'HoldingsGainPercentRealtime', u'HoldingsGainRealtime', u'HoldingsValue', u'HoldingsValueRealtime', u'LastTradeDate', u'LastTradePriceOnly', u'LastTradeRealtimeWithTime', u'LastTradeTime', u'LastTradeWithTime', u'LowLimit', u'MarketCapRealtime', u'MarketCapitalization', u'MoreInfo', u'Name', u'Notes', u'OneyrTargetPrice', u'Open', u'OrderBookRealtime', u'PEGRatio', u'PERatio', u'PERatioRealtime', u'PercebtChangeFromYearHigh', u'PercentChange', u'PercentChangeFromFiftydayMovingAverage', u'PercentChangeFromTwoHundreddayMovingAverage', u'PercentChangeFromYearLow', u'PreviousClose', u'PriceBook', u'PriceEPSEstimateCurrentYear', u'PriceEPSEstimateNextYear', u'PricePaid', u'PriceSales', u'SharesOwned', u'ShortRatio', u'StockExchange', u'Symbol', u'TickerTrend', u'TradeDate', u'TwoHundreddayMovingAverage', u'Volume', u'YearHigh', u'YearLow', u'YearRange', 'datestamp', 'timestamp', 'funds', 'dayofweek', 'hourofday']
 
@@ -75,9 +85,6 @@ for block in range(0, len(stocks), 150):
     # create the rest request
     url = base_uri + urllib.urlencode(query)
 
-    print url
-
-
     rsp = get_json(url)
     quotes = []
     if 'query' in rsp and \
@@ -93,9 +100,9 @@ for block in range(0, len(stocks), 150):
         quote['hourofday'] = str(get_hour())
         quote['dayofweek'] = str(get_weekday())
         cur_time = time.time()
-        cur_date = datetime.now() + timedelta(hours=3)
+        est_date = datetime.now() + timedelta(hours=-5) #offset assumes AWS uses UTC
         quote['timestamp'] = int(cur_time)
-        quote['datestamp'] = str(cur_date)
+        quote['datestamp'] = str(est_date)
         
         #Add 401k plan fund names to each relevant row.
         quote['funds'] = FundDict.get(quote['Symbol'])
@@ -104,3 +111,15 @@ for block in range(0, len(stocks), 150):
         print "*"*80
 
 f.close()
+
+#Import s3 credentials from ubuntu directory
+cred_file = open('/home/ubuntu/keys/s3_creds_sjh.json')
+creds = json.load(cred_file)
+AWS_ACCESS_KEY_ID = creds['aws_access_key_id']
+AWS_SECRET_ACCESS_KEY = creds['aws_secret_access_key']
+
+#write files to s3 bucket
+s3 = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
+bucket = s3.create_bucket('shecht-metamarkets')
+key = bucket.new_key(s3_filename)
+key.set_contents_from_filename(ubuntu_filename)
