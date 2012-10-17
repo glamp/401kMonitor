@@ -117,6 +117,7 @@ cred_file = open('/home/ubuntu/keys/s3_creds_sjh.json')
 creds = json.load(cred_file)
 AWS_ACCESS_KEY_ID = creds['aws_access_key_id']
 AWS_SECRET_ACCESS_KEY = creds['aws_secret_access_key']
+cred_file.close()
 
 #write files to s3 bucket
 s3 = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
