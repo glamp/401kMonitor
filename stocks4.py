@@ -124,3 +124,6 @@ s3 = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
 bucket = s3.create_bucket('shecht-metamarkets')
 key = bucket.new_key(s3_filename)
 key.set_contents_from_filename(ubuntu_filename)
+
+#delete file from ubuntu after saving it to s3
+os.unlink(ubuntu_filename)
