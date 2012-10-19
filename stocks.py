@@ -61,8 +61,8 @@ month = str(cur_date.month)
 day = str(cur_date.day)
 hour = str(cur_date.hour)
 date_plug = 'y='+year+'/m='+month+'/d='+day+'/h='+hour+'/'
-ubuntu_filename = '/Users/admin/Desktop/stockdata_'+time_stamp+'.csv'
-#ubuntu_filename = '/home/ubuntu/repo/flatfiles/stockdata_'+time_stamp+'.csv'
+#ubuntu_filename = '/Users/admin/Desktop/stockdata_'+time_stamp+'.csv'
+ubuntu_filename = '/home/ubuntu/repo/flatfiles/stockdata_'+time_stamp+'.csv'
 s3_filename = 'stockdata/'+date_plug+'stockdata_'+time_stamp+'.csv'
 
 f = open(ubuntu_filename, 'wb')
