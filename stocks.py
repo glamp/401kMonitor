@@ -61,20 +61,14 @@ month = str(cur_date.month)
 day = str(cur_date.day)
 hour = str(cur_date.hour)
 date_plug = 'y='+year+'/m='+month+'/d='+day+'/h='+hour+'/'
-ubuntu_filename = '/home/ubuntu/repo/flatfiles/stockdata_'+time_stamp+'.csv'
+ubuntu_filename = '/Users/admin/Desktop/stockdata_'+time_stamp+'.csv'
+#ubuntu_filename = '/home/ubuntu/repo/flatfiles/stockdata_'+time_stamp+'.csv'
 s3_filename = 'stockdata/'+date_plug+'stockdata_'+time_stamp+'.csv'
 
 f = open(ubuntu_filename, 'wb')
 #f = open('/Users/admin/Desktop/Demo_Data/TickerTracker/Stock_Data/stockdata_'+time_stamp+'.csv', 'wb')
 w = csv.writer(f)
-columns = [u'AfterHoursChangeRealtime', u'Ask', u'AskRealtime', u'AverageDailyVolume', u'Bid', u'BidRealtime',
-           u'BookValue', u'Change', u'ChangeFromYearHigh', u'ChangeFromYearLow', u'ChangePercentRealtime', u'ChangeRealtime', u'ChangeinPercent', 
-           u'DaysHigh', u'DaysLow', u'DaysRange', u'DaysValueChange', u'DividendShare', u'DividendYield', u'EBITDA', 
-           u'EarningsShare', u'ErrorIndicationreturnedforsymbolchangedinvalid', u'FiftydayMovingAverage', u'LastTradePriceOnly', u'MarketCapRealtime', 
-           u'MarketCapitalization', u'Name', u'Open', u'PEGRatio', u'PERatio', u'PercebtChangeFromYearHigh', u'PercentChange', 
-           u'PercentChangeFromTwoHundreddayMovingAverage', u'PercentChangeFromYearLow', u'PreviousClose', u'PriceBook', u'PricePaid', u'ShortRatio', 
-           u'StockExchange', u'Symbol', u'TradeDate', u'TwoHundreddayMovingAverage', u'Volume', u'YearHigh', u'YearLow', 'datestamp', 'timestamp', 
-           'funds', 'dayofweek', 'hourofday']
+columns = [u'AfterHoursChangeRealtime', u'Ask', u'AskRealtime', u'AverageDailyVolume', u'Bid', u'BidRealtime', u'BookValue', u'Change', u'ChangeFromYearHigh', u'ChangeFromYearLow', u'ChangePercentRealtime', u'ChangeRealtime', u'ChangeinPercent', u'DaysHigh', u'DaysLow', u'DaysRange', u'DaysValueChange', u'DividendShare', u'DividendYield', u'EBITDA', u'EarningsShare', u'ErrorIndicationreturnedforsymbolchangedinvalid', u'FiftydayMovingAverage', u'LastTradePriceOnly', u'MarketCapRealtime', u'MarketCapitalization', u'Name', u'Open', u'PEGRatio', u'PERatio', u'PercebtChangeFromYearHigh', u'PercentChange', u'PercentChangeFromTwoHundreddayMovingAverage', u'PercentChangeFromYearLow', u'PreviousClose', u'PriceBook', u'PricePaid', u'ShortRatio', u'StockExchange', u'Symbol', u'TradeDate', u'TwoHundreddayMovingAverage', u'Volume', u'YearHigh', u'YearLow', 'datestamp', 'timestamp', 'funds', 'dayofweek', 'hourofday']
 
 w.writerow(columns)
 
