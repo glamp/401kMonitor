@@ -41,8 +41,6 @@ def get_hour():
 
 dirname, filename = os.path.split(os.path.abspath(__file__))
 
-APIKEY = "6YRmn23V34GpcTPULtAmjh.hzXNAh1bcGEL0bl5p6EwUqm25o_FyQZyQrCxisg--"
-
 base_uri = "http://query.yahooapis.com/v1/public/yql?"
 
 # define some stocks
@@ -69,7 +67,14 @@ s3_filename = 'stockdata/'+date_plug+'stockdata_'+time_stamp+'.csv'
 f = open(ubuntu_filename, 'wb')
 #f = open('/Users/admin/Desktop/Demo_Data/TickerTracker/Stock_Data/stockdata_'+time_stamp+'.csv', 'wb')
 w = csv.writer(f)
-columns = [u'AfterHoursChangeRealtime', u'AnnualizedGain', u'Ask', u'AskRealtime', u'AverageDailyVolume', u'Bid', u'BidRealtime', u'BookValue', u'Change', u'ChangeFromFiftydayMovingAverage', u'ChangeFromTwoHundreddayMovingAverage', u'ChangeFromYearHigh', u'ChangeFromYearLow', u'ChangePercentRealtime', u'ChangeRealtime', u'Change_PercentChange', u'ChangeinPercent', u'Commission', u'DaysHigh', u'DaysLow', u'DaysRange', u'DaysRangeRealtime', u'DaysValueChange', u'DaysValueChangeRealtime', u'DividendPayDate', u'DividendShare', u'DividendYield', u'EBITDA', u'EPSEstimateCurrentYear', u'EPSEstimateNextQuarter', u'EPSEstimateNextYear', u'EarningsShare', u'ErrorIndicationreturnedforsymbolchangedinvalid', u'ExDividendDate', u'FiftydayMovingAverage', u'HighLimit', u'HoldingsGain', u'HoldingsGainPercent', u'HoldingsGainPercentRealtime', u'HoldingsGainRealtime', u'HoldingsValue', u'HoldingsValueRealtime', u'LastTradeDate', u'LastTradePriceOnly', u'LastTradeRealtimeWithTime', u'LastTradeTime', u'LastTradeWithTime', u'LowLimit', u'MarketCapRealtime', u'MarketCapitalization', u'MoreInfo', u'Name', u'Notes', u'OneyrTargetPrice', u'Open', u'OrderBookRealtime', u'PEGRatio', u'PERatio', u'PERatioRealtime', u'PercebtChangeFromYearHigh', u'PercentChange', u'PercentChangeFromFiftydayMovingAverage', u'PercentChangeFromTwoHundreddayMovingAverage', u'PercentChangeFromYearLow', u'PreviousClose', u'PriceBook', u'PriceEPSEstimateCurrentYear', u'PriceEPSEstimateNextYear', u'PricePaid', u'PriceSales', u'SharesOwned', u'ShortRatio', u'StockExchange', u'Symbol', u'TickerTrend', u'TradeDate', u'TwoHundreddayMovingAverage', u'Volume', u'YearHigh', u'YearLow', u'YearRange', 'datestamp', 'timestamp', 'funds', 'dayofweek', 'hourofday']
+columns = [u'AfterHoursChangeRealtime', u'Ask', u'AskRealtime', u'AverageDailyVolume', u'Bid', u'BidRealtime',
+           u'BookValue', u'Change', u'ChangeFromYearHigh', u'ChangeFromYearLow', u'ChangePercentRealtime', u'ChangeRealtime', u'ChangeinPercent', 
+           u'DaysHigh', u'DaysLow', u'DaysRange', u'DaysValueChange', u'DividendShare', u'DividendYield', u'EBITDA', 
+           u'EarningsShare', u'ErrorIndicationreturnedforsymbolchangedinvalid', u'FiftydayMovingAverage', u'LastTradePriceOnly', u'MarketCapRealtime', 
+           u'MarketCapitalization', u'Name', u'Open', u'PEGRatio', u'PERatio', u'PercebtChangeFromYearHigh', u'PercentChange', 
+           u'PercentChangeFromTwoHundreddayMovingAverage', u'PercentChangeFromYearLow', u'PreviousClose', u'PriceBook', u'PricePaid', u'ShortRatio', 
+           u'StockExchange', u'Symbol', u'TradeDate', u'TwoHundreddayMovingAverage', u'Volume', u'YearHigh', u'YearLow', 'datestamp', 'timestamp', 
+           'funds', 'dayofweek', 'hourofday']
 
 w.writerow(columns)
 
@@ -113,7 +118,7 @@ for block in range(0, len(stocks), 150):
 f.close()
 
 #Import s3 credentials from ubuntu directory
-cred_file = open('/home/ubuntu/keys/s3_creds_sjh.json')
+cred_file = open('/home/ubuntu/keys/s3_creds_mmx.json')
 creds = json.load(cred_file)
 AWS_ACCESS_KEY_ID = creds['aws_access_key_id']
 AWS_SECRET_ACCESS_KEY = creds['aws_secret_access_key']
@@ -121,7 +126,7 @@ cred_file.close()
 
 #write files to s3 bucket
 s3 = boto.connect_s3(AWS_ACCESS_KEY_ID,AWS_SECRET_ACCESS_KEY)
-bucket = s3.create_bucket('shecht-metamarkets')
+bucket = s3.get_bucket('metamx-shecht')
 key = bucket.new_key(s3_filename)
 key.set_contents_from_filename(ubuntu_filename)
 
